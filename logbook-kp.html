@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logbook KP 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --bg:#f4f3ef;--card:#fff;--card2:#faf9f6;--border:#e4e2db;--border2:#d0cec5;
+  --ink:#1a1916;--ink2:#4a4840;--ink3:#8a877e;
+  --accent:#c8651a;--accent-bg:#fff4ec;--accent-bd:#f0c4a0;
+  --green:#1a7a4a;--green-bg:#edfaf3;
+  --red:#c0392b;--red-bg:#fdecea;
+  --blue:#1a4fa0;--blue-bg:#eaf0ff;
+  --purple:#6b34a8;--purple-bg:#f3eeff;
+  --yellow:#9a7000;--yellow-bg:#fffbea;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:var(--ink);padding:0 2rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100;}
+.tb-brand{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#fff;letter-spacing:.1em;font-weight:500;}
+.tb-brand span{color:var(--accent);}
+.tb-sp{flex:1;}
+.btn-tb{font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:600;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.btn-add{background:var(--accent);color:#fff;}
+.btn-add:hover{background:#b55a14;}
+.btn-exp{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);}
+.btn-exp:hover{background:rgba(255,255,255,.18);}
+.btn-imp{background:rgba(255,255,255,.08);color:#ccc;border:1px solid rgba(255,255,255,.1);}
+.btn-imp:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* HEADER */
+.hdr{background:var(--card);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;}
+.hdr-in{max-width:1100px;margin:0 auto;}
+.kp-tag{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.12em;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bd);padding:3px 10px;border-radius:4px;margin-bottom:.8rem;font-weight:500;}
+h1{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.35rem;}
+.hdr-meta{font-family:'JetBrains Mono',monospace;font-size:.73rem;color:var(--ink3);margin-bottom:1.3rem;}
+.stats{display:flex;gap:.7rem;flex-wrap:wrap;}
+.stat{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:.55rem .9rem;min-width:90px;}
+.stat .v{font-size:1.3rem;font-weight:800;color:var(--accent);line-height:1;}
+.stat .l{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink3);letter-spacing:.06em;margin-top:2px;}
+
+/* FILTERS */
+.filters{max-width:1100px;margin:1.2rem auto 0;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;}
+.fbtn{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.06em;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--card);color:var(--ink3);cursor:pointer;transition:all .15s;font-weight:500;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fbtn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* MAIN */
+.main{max-width:1100px;margin:1.5rem auto 4rem;padding:0 2rem;}
+
+.mlbl{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;color:var(--ink3);text-transform:uppercase;margin:2rem 0 .75rem;display:flex;align-items:center;gap:.75rem;}
+.mlbl::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* WEEK CARD */
+.wcard{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.65rem;overflow:hidden;transition:box-shadow .2s,border-color .2s;}
+.wcard:hover{box-shadow:var(--shadow);border-color:var(--border2);}
+.wcard.is-lib{background:#fefcfa;}
+
+.wrow{display:grid;grid-template-columns:72px 1fr auto;align-items:start;gap:1rem;padding:1rem 1.2rem;}
+
+.wnum{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.08em;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bd);padding:4px 7px;border-radius:5px;text-align:center;white-space:nowrap;margin-top:2px;}
+.wnum.lib{color:var(--red);background:var(--red-bg);border-color:#f5c0ba;}
+
+.winfo{}
+.wtitle{font-size:.92rem;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3;}
+.is-lib .wtitle{color:var(--red);}
+.wdates{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--ink3);margin-bottom:5px;}
+.wdesc{font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:6px;}
+.wmeta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+
+.tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:500;letter-spacing:.04em;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.tag-training{background:var(--purple-bg);color:var(--purple);}
+.tag-maintenance{background:var(--yellow-bg);color:var(--yellow);}
+.tag-electrical{background:var(--blue-bg);color:var(--blue);}
+.tag-camera{background:var(--green-bg);color:var(--green);}
+.tag-plc{background:#fce8f3;color:#a0246e;}
+.tag-mekanikal{background:var(--yellow-bg);color:#7a5800;}
+.tag-drawing{background:#eef3ff;color:#2a4080;}
+.tag-hmi{background:var(--green-bg);color:#0d6640;}
+.tag-scada{background:var(--red-bg);color:var(--red);}
+.tag-libur{background:var(--red-bg);color:var(--red);}
+
+.whours{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--ink3);}
+
+.wact{display:flex;gap:.35rem;flex-shrink:0;padding-top:2px;}
+.bico{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:all .15s;color:var(--ink3);}
+.bico:hover{border-color:var(--border2);color:var(--ink);background:var(--border);}
+.bico.del:hover{background:var(--red-bg);border-color:#f5c0ba;color:var(--red);}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1rem;color:var(--ink3);}
+.empty .ico{font-size:2.5rem;margin-bottom:.75rem;}
+.empty p{font-size:.85rem;line-height:1.6;}
+
+/* MODAL */
+.ovl{position:fixed;inset:0;background:rgba(20,18,15,.55);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s;}
+.ovl.show{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border-radius:16px;width:100%;max-width:560px;box-shadow:var(--shadow-lg);border:1px solid var(--border);transform:translateY(16px);transition:transform .25s;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;}
+.ovl.show .modal{transform:translateY(0);}
+.mhdr{padding:1.3rem 1.5rem 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-shrink:0;}
+.mtitle{font-size:1rem;font-weight:700;color:var(--ink);}
+.bcls{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--card2);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s;}
+.bcls:hover{background:var(--red-bg);color:var(--red);border-color:#f5c0ba;}
+.mbody{padding:0 1.5rem 0;overflow-y:auto;}
+.fg{margin-bottom:.9rem;}
+label{display:block;font-size:.77rem;font-weight:600;color:var(--ink2);margin-bottom:4px;}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;color:var(--ink);transition:border-color .15s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#fff;}
+textarea{resize:vertical;min-height:90px;line-height:1.55;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.mftr{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.6rem;justify-content:flex-end;flex-shrink:0;margin-top:.5rem;}
+
+.btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;}
+.btn-pri{background:var(--accent);color:#fff;}
+.btn-pri:hover{background:#b55a14;}
+.btn-sec{background:var(--card2);color:var(--ink2);border:1px solid var(--border2);}
+.btn-sec:hover{background:var(--border);}
+
+/* CONFIRM */
+.cfm{position:fixed;inset:0;background:rgba(20,18,15,.55);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s;}
+.cfm.show{opacity:1;pointer-events:all;}
+.cfm-in{background:var(--card);border-radius:14px;padding:1.5rem;max-width:360px;width:90%;box-shadow:var(--shadow-lg);border:1px solid var(--border);}
+.cfm-in h3{font-size:.95rem;font-weight:700;margin-bottom:.5rem;}
+.cfm-in p{font-size:.82rem;color:var(--ink2);line-height:1.5;margin-bottom:1.2rem;}
+.cfm-btns{display:flex;gap:.6rem;justify-content:flex-end;}
+.btn-dng{background:var(--red);color:#fff;}
+.btn-dng:hover{background:#a0291e;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ink);color:#fff;font-size:.82rem;font-weight:500;padding:10px 16px;border-radius:8px;box-shadow:var(--shadow-lg);z-index:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* INPUT FILE HIDDEN */
+#importInput{display:none;}
+
+@media(max-width:640px){
+  .wrow{grid-template-columns:1fr;gap:.6rem;}
+  .wact{justify-content:flex-end;}
+  .filters,.main{padding:0 1rem;}
+  .hdr{padding:1.2rem 1rem 1rem;}
+  .topbar{padding:0 1rem;gap:.5rem;}
+  .btn-tb span{display:none;}
+}
+
+@media print {
+  .topbar, .filters, .wact, #toast, .ovl, .cfm { display: none !important; }
+  body { background: #fff; }
+  .wcard { box-shadow: none; border-color: #000; break-inside: avoid; margin-bottom: 1rem; }
+  .hdr { padding: 1rem 0; border: none; }
+  .main { margin-top: 0; padding: 0; }
+}
+.pdf-mode .topbar, .pdf-mode .filters, .pdf-mode .wact, .pdf-mode .empty p, .pdf-mode #toast { display: none !important; }
+.pdf-mode { background: #fff; }
+.pdf-mode .main { margin-bottom: 0; padding: 0; }
+.pdf-mode .wcard { border-color: #ccc; box-shadow: none; break-inside: avoid; margin-bottom: 1rem; }
+.pdf-mode .hdr { padding: 1.5rem 0; border-bottom: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">LOG<span>KP</span> · 2026</div>
+  <div class="tb-sp"></div>
+  <input type="file" id="importInput" accept=".json" onchange="importJSON(event)">
+  <button class="btn-tb btn-imp" onclick="document.getElementById('importInput').click()">⬆ <span>Import</span></button>
+  <button class="btn-tb btn-exp" onclick="exportJSON()">⬇ <span>Export JSON</span></button>
+  <button class="btn-tb btn-exp" style="background:#c0392b; color:#fff; border-color:#a0291e;" onclick="exportPDF()">📄 <span>Export PDF</span></button>
+  <button class="btn-tb btn-add" onclick="openModal()">+ <span>Tambah</span></button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="kp-tag">LOGBOOK KERJA PRAKTIK</div>
+    <h1>Field Activity Report</h1>
+    <div class="hdr-meta">21 Januari – 21 April 2026 &nbsp;·&nbsp; 07.20 – 16.50 WIB</div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="sW">-</div><div class="l">MINGGU KERJA</div></div>
+      <div class="stat"><div class="v" id="sD">-</div><div class="l">HARI KERJA</div></div>
+      <div class="stat"><div class="v" id="sH">-</div><div class="l">JAM TOTAL</div></div>
+      <div class="stat"><div class="v" id="sP">-</div><div class="l">FASE KP</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="fbtn active" onclick="setFilter(this,'all')">Semua</button>
+  <button class="fbtn" onclick="setFilter(this,'1')">Januari</button>
+  <button class="fbtn" onclick="setFilter(this,'2')">Februari</button>
+  <button class="fbtn" onclick="setFilter(this,'3')">Maret</button>
+  <button class="fbtn" onclick="setFilter(this,'4')">April</button>
+</div>
+
+<!-- LIST -->
+<div class="main" id="listWrap"></div>
+
+<!-- MODAL -->
+<div class="ovl" id="ovl" onclick="ovlClick(event)">
+  <div class="modal">
+    <div class="mhdr">
+      <div class="mtitle" id="mtitle">Tambah Minggu</div>
+      <button class="bcls" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="frow">
+        <div class="fg">
+          <label>No. Minggu</label>
+          <input type="text" id="fNum" placeholder="MG-01">
+        </div>
+        <div class="fg">
+          <label>Bulan</label>
+          <select id="fMonth">
+            <option value="1">Januari</option>
+            <option value="2">Februari</option>
+            <option value="3">Maret</option>
+            <option value="4">April</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Kategori</label>
+        <select id="fTag">
+          <option value="training">Training</option>
+          <option value="maintenance">Maintenance Mesin</option>
+          <option value="electrical">Electrical / Wiring</option>
+          <option value="camera">Camera Inspection</option>
+          <option value="plc">PLC</option>
+          <option value="mekanikal">Mekanikal / Pneumatik</option>
+          <option value="drawing">Drawing (2D/3D)</option>
+          <option value="hmi">HMI</option>
+          <option value="scada">SCADA / Node-RED</option>
+          <option value="libur">Libur / Cuti Bersama</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Judul Kegiatan Minggu Ini</label>
+        <input type="text" id="fTitle" placeholder="cth: Training General & Internal">
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label>Tanggal Mulai</label>
+          <input type="date" id="fStart">
+        </div>
+        <div class="fg">
+          <label>Tanggal Selesai</label>
+          <input type="date" id="fEnd">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Ringkasan Kegiatan</label>
+        <textarea id="fDesc" placeholder="Apa saja yang dilakukan minggu ini? Tulis ringkas dan jelas..."></textarea>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label>Jumlah Hari Kerja</label>
+          <input type="number" id="fDays" min="0" max="7" placeholder="6">
+        </div>
+        <div class="fg" style="display:flex;flex-direction:column;justify-content:flex-end;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink3);background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;">
+            🕐 07.20 – 16.50 WIB<br>= 9.5 jam/hari
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mftr">
+      <button class="btn btn-sec" onclick="closeModal()">Batal</button>
+      <button class="btn btn-pri" onclick="saveEntry()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="cfm" id="cfm">
+  <div class="cfm-in">
+    <h3>🗑 Hapus Entri?</h3>
+    <p>Entri ini akan dihapus permanen. Tindakan tidak dapat dibatalkan.</p>
+    <div class="cfm-btns">
+      <button class="btn btn-sec" onclick="closeCfm()">Batal</button>
+      <button class="btn btn-dng" onclick="doDelete()">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const JAM = 9.5;
+const MONTHS = {1:'Januari 2026',2:'Februari 2026',3:'Maret 2026',4:'April 2026'};
+const TAG_LBL = {training:'Training',maintenance:'Maintenance',electrical:'Electrical',camera:'Camera Inspection',plc:'PLC Keyence',mekanikal:'Mekanikal',drawing:'Drawing',hmi:'HMI',scada:'SCADA',libur:'Libur'};
+const PHASES = ['training','maintenance','electrical','camera','plc','mekanikal','drawing','hmi','scada'];
+
+function toDateStr(d) {
+  if(!d || !d.includes('-')) return d;
+  const parts = d.split('-');
+  const mnames = ['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  return `${parseInt(parts[2])} ${mnames[parseInt(parts[1])]} ${parts[0]}`;
+}
+
+function toInputDate(dStr) {
+  if(!dStr || dStr.includes('-')) return dStr;
+  const mnames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  const p = dStr.split(' ');
+  if(p.length < 3) return dStr;
+  let idx = mnames.findIndex(m => p[1].startsWith(m));
+  let m = String((idx > -1 ? idx : 0) + 1).padStart(2,'0');
+  let day = String(parseInt(p[0])).padStart(2,'0');
+  return `${p[2]}-${m}-${day}`;
+}
+
+const DEFAULT = [
+  {id:1,num:'MG-01',month:1,tag:'training',isLib:false,
+   title:'Training General & Internal Perusahaan',
+   start:'21 Jan 2026',end:'25 Jan 2026',days:5,
+   desc:'Orientasi perusahaan, perkenalan divisi dan pembimbing lapangan, briefing K3, penandatanganan dokumen KP. Dilanjutkan training internal: SOP lapangan, tur fasilitas produksi & gudang, pengenalan budaya kerja 5S, sistem dokumentasi, dan alur kerja antar departemen.'},
+  {id:2,num:'LIBUR',month:1,tag:'libur',isLib:true,
+   title:'Libur Isra Mi\'raj & Tahun Baru Imlek',
+   start:'27 Jan 2026',end:'29 Jan 2026',days:0,
+   desc:'Libur nasional berturut-turut: Isra Mi\'raj (27 Jan), Cuti Bersama Imlek (28 Jan), Tahun Baru Imlek 2576 Kongzili (29 Jan).'},
+  {id:3,num:'MG-02',month:2,tag:'maintenance',isLib:false,
+   title:'Ikut Karyawan Maintenance Mesin',
+   start:'30 Jan 2026',end:'8 Feb 2026',days:9,
+   desc:'Pendampingan tim maintenance selama hampir 2 minggu: pengenalan jadwal Preventive Maintenance (PM), ikut corrective maintenance mesin lini 1 & 2, observasi penggantian komponen pneumatik (solenoid valve & actuator), pengisian form checklist, dan rekap laporan mingguan.'},
+  {id:4,num:'MG-03',month:2,tag:'electrical',isLib:false,
+   title:'Wiring & Crimping — Bagian 1',
+   start:'10 Feb 2026',end:'15 Feb 2026',days:6,
+   desc:'Pengenalan panel listrik industri dan standar wiring (PUIL & IEC). Praktik identifikasi kabel berdasarkan warna & AWG, teknik crimping ferrule dan ring terminal, routing kabel dalam panel, pemasangan cable duct, dan marking label. Evaluasi hasil dengan continuity tester.'},
+  {id:5,num:'MG-04',month:2,tag:'electrical',isLib:false,
+   title:'Wiring & Crimping — Bagian 2',
+   start:'17 Feb 2026',end:'22 Feb 2026',days:6,
+   desc:'Wiring sirkuit star-delta starter, pemasangan busbar grounding PE, verifikasi urutan fasa R-S-T. Pengujian panel: continuity test dan megger test 500V DC. Dokumentasi as-built panel dan penyusunan wiring list sesuai kondisi aktual.'},
+  {id:6,num:'MG-05',month:2,tag:'camera',isLib:false,
+   title:'Camera Inspection Keyence — Bagian 1',
+   start:'24 Feb 2026',end:'1 Mar 2026',days:6,
+   desc:'Pengenalan sistem machine vision Keyence (seri CV/XG). Setup hardware kamera: FOV, focal length, dan konfigurasi pencahayaan. Pembuatan inspection flow dasar: Brightness Check, Edge Detection, Area Inspection. Uji komunikasi I/O dan trigger eksternal dari conveyor sensor.'},
+  {id:7,num:'MG-06',month:3,tag:'camera',isLib:false,
+   title:'Camera Inspection Keyence — Bagian 2',
+   start:'3 Mar 2026',end:'8 Mar 2026',days:6,
+   desc:'Pattern matching dan position correction untuk kompensasi pergeseran produk. Integrasi kamera ke lini produksi aktual. Fine-tuning parameter (shutter speed, gain, exposure). Pengujian 200 sampel OK/NG, analisis akurasi (TP/FP/TN/FN), presentasi hasil ke supervisor.'},
+  {id:8,num:'MG-07',month:3,tag:'plc',isLib:false,
+   title:'Belajar Pemrograman PLC Keyence',
+   start:'10 Mar 2026',end:'15 Mar 2026',days:6,
+   desc:'Pengenalan PLC Keyence KV-8000 dan KV Studio. Pemrograman Ladder Diagram: timer, counter, instruksi CMP, MOV, aritmatika. Integrasi PLC dengan camera inspection via EtherNet/IP. Pembuatan program sekuensial lini produksi otomatis: sensor → trigger kamera → sorting reject/accept.'},
+  {id:9,num:'MG-08',month:3,tag:'mekanikal',isLib:false,
+   title:'Belajar Mekanikal & Pneumatik',
+   start:'17 Mar 2026',end:'22 Mar 2026',days:6,
+   desc:'Pengenalan komponen mekanikal industri (bearing, coupling, chain/belt). Sistem pneumatik: FRL unit, solenoid valve, silinder double acting. Praktik merakit sirkuit pneumatik dan membaca diagram ISO 1219. Shaft alignment dengan dial gauge, troubleshooting kebocoran udara di lapangan.'},
+  {id:10,num:'MG-09',month:3,tag:'drawing',isLib:false,
+   title:'Etiket Drawing & 2D Drawing',
+   start:'24 Mar 2026',end:'27 Mar 2026',days:4,
+   desc:'Standar etiket drawing ISO 7200 (title block). Praktik AutoCAD/2D CAD: proyeksi orthogonal, dimensioning toleransi ISO, assembly drawing dengan BOM. Pembuatan wiring diagram panel format A3 lengkap dengan single line diagram dan BOM kabel.'},
+  {id:11,num:'LIBUR',month:3,tag:'libur',isLib:true,
+   title:'Libur Panjang Nyepi & Idul Fitri 1446 H',
+   start:'28 Mar 2026',end:'7 Apr 2026',days:0,
+   desc:'Libur panjang: Cuti Bersama Nyepi (28 Mar), Hari Suci Nyepi (29 Mar), Idul Fitri hari 1–2 (31 Mar & 1 Apr), Cuti Bersama Lebaran (2, 3, 4, 7 Apr 2026).'},
+  {id:12,num:'MG-10',month:4,tag:'drawing',isLib:false,
+   title:'3D Drawing — Lanjutan Desain',
+   start:'8 Apr 2026',end:'12 Apr 2026',days:5,
+   desc:'Pengenalan 3D CAD (SolidWorks/Inventor). Pemodelan solid 3D komponen mekanikal aktual (bracket, jig fixture). Assembly 3D dengan interference check dan simulasi kinematik. Generate drawing 2D dari model 3D: standard views, exploded view, dan BOM.'},
+  {id:13,num:'MG-11',month:4,tag:'hmi',isLib:false,
+   title:'Electrical Design & Desain HMI',
+   start:'14 Apr 2026',end:'17 Apr 2026',days:4,
+   desc:'Pembuatan schematic electrical design (EPLAN/AutoCAD Electrical): power distribution, control circuit, I/O list PLC, terminal diagram. Pengenalan HMI Keyence VT/GT dan VT Studio: desain layar utama (status mesin, start/stop, counter produk, navigation menu), linking tag ke PLC.'},
+  {id:14,num:'MG-12',month:4,tag:'scada',isLib:false,
+   title:'Modifikasi HMI & SCADA Prototipe Node-RED',
+   start:'21 Apr 2026',end:'21 Apr 2026',days:1,
+   desc:'Modifikasi HMI existing: screen alarm management, trend graph parameter proses, setting komunikasi HMI-PLC via RS-422. Paralel: prototipe SCADA berbasis Node-RED — instalasi, konfigurasi flow, koneksi ke PLC via Modbus TCP/MQTT, dan dashboard monitoring mendekati tahap deployment.'},
+];
+
+let data = (() => {
+  try { const s=localStorage.getItem('logkp26'); return s?JSON.parse(s):structuredClone(DEFAULT); }
+  catch { return structuredClone(DEFAULT); }
+})();
+
+let editId=null, delId=null, curFilter='all';
+
+function save(){ localStorage.setItem('logkp26',JSON.stringify(data)); }
+
+// ── RENDER ──
+function render(){
+  const wrap=document.getElementById('listWrap');
+  const list = curFilter==='all' ? data : data.filter(d=>String(d.month)===curFilter);
+  if(!list.length){
+    wrap.innerHTML=`<div class="empty"><div class="ico">📋</div><p>Belum ada entri untuk bulan ini.<br>Klik <strong>+ Tambah</strong> di atas untuk menambahkan.</p></div>`;
+    updateStats(); return;
+  }
+  const byMonth={};
+  list.forEach(d=>{ (byMonth[d.month]??=[]).push(d); });
+  let html='';
+  Object.keys(byMonth).sort((a,b)=>a-b).forEach(m=>{
+    html+=`<div class="mlbl">${MONTHS[m]||'Bulan '+m}</div>`;
+    byMonth[m].forEach(e=>{ html+=card(e); });
+  });
+  wrap.innerHTML=html;
+  updateStats();
+}
+
+function card(e){
+  const tagHtml=`<span class="tag tag-${e.tag}">${TAG_LBL[e.tag]||e.tag}</span>`;
+  const hoursHtml=!e.isLib&&e.days>0
+    ?`<span class="whours">🕐 07.20–16.50 · ${e.days} hari · ${(e.days*JAM).toFixed(0)} jam</span>`:'';
+  const acts=`<div class="wact">
+    <button class="bico" onclick="openEdit(${e.id})" title="Edit">✏️</button>
+    <button class="bico del" onclick="askDel(${e.id})" title="Hapus">🗑</button>
+  </div>`;
+  return `<div class="wcard${e.isLib?' is-lib':''}">
+    <div class="wrow">
+      <div class="wnum${e.isLib?' lib':''}">${e.num}</div>
+      <div class="winfo">
+        <div class="wtitle">${e.title}</div>
+        <div class="wdates">📅 ${e.start}${e.end&&e.end!==e.start?' – '+e.end:''}</div>
+        <div class="wdesc">${e.desc}</div>
+        <div class="wmeta">${tagHtml}${hoursHtml}</div>
+      </div>
+      ${acts}
+    </div>
+  </div>`;
+}
+
+function updateStats(){
+  const active=data.filter(d=>!d.isLib);
+  const totalD=active.reduce((s,d)=>s+(d.days||0),0);
+  const phases=new Set(active.map(d=>d.tag)).size;
+  document.getElementById('sW').textContent=active.length;
+  document.getElementById('sD').textContent=totalD;
+  document.getElementById('sH').textContent=(totalD*JAM).toFixed(0);
+  document.getElementById('sP').textContent=phases;
+}
+
+// ── FILTER ──
+function setFilter(btn,f){
+  curFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('active',b===btn));
+  render();
+}
+
+// ── MODAL ──
+function openModal(){
+  editId=null;
+  document.getElementById('mtitle').textContent='Tambah Minggu';
+  const wNum='MG-'+String(data.filter(d=>!d.isLib).length+1).padStart(2,'0');
+  ['fNum','fTitle','fStart','fEnd','fDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fNum').value=wNum;
+  document.getElementById('fDays').value='6';
+  document.getElementById('fTag').value='training';
+  document.getElementById('fMonth').value='1';
+  document.getElementById('ovl').classList.add('show');
+}
+
+function openEdit(id){
+  const e=data.find(d=>d.id===id); if(!e) return;
+  editId=id;
+  document.getElementById('mtitle').textContent='Edit Minggu';
+  document.getElementById('fNum').value=e.num;
+  document.getElementById('fTag').value=e.tag;
+  document.getElementById('fTitle').value=e.title;
+  document.getElementById('fStart').value=toInputDate(e.start);
+  document.getElementById('fEnd').value=e.end ? toInputDate(e.end) : '';
+  document.getElementById('fDesc').value=e.desc;
+  document.getElementById('fDays').value=e.days;
+  document.getElementById('fMonth').value=e.month;
+  document.getElementById('ovl').classList.add('show');
+}
+
+function closeModal(){ document.getElementById('ovl').classList.remove('show'); editId=null; }
+function ovlClick(e){ if(e.target===document.getElementById('ovl')) closeModal(); }
+
+function saveEntry(){
+  const num=document.getElementById('fNum').value.trim();
+  const tag=document.getElementById('fTag').value;
+  const title=document.getElementById('fTitle').value.trim();
+  const start=toDateStr(document.getElementById('fStart').value.trim());
+  const end=toDateStr(document.getElementById('fEnd').value.trim());
+  const desc=document.getElementById('fDesc').value.trim();
+  const days=parseInt(document.getElementById('fDays').value)||0;
+  const month=parseInt(document.getElementById('fMonth').value);
+  const isLib=tag==='libur';
+
+  if(!title||!start){ toast('⚠️ Judul dan tanggal mulai wajib diisi!'); return; }
+
+  if(editId!==null){
+    const i=data.findIndex(d=>d.id===editId);
+    if(i>-1) data[i]={...data[i],num,tag,title,start,end,desc,days,month,isLib};
+    toast('✅ Entri diperbarui');
+  } else {
+    data.push({id:Date.now(),num,month,tag,isLib,title,start,end,desc,days});
+    data.sort((a,b)=>a.month!==b.month?a.month-b.month:a.id-b.id);
+    toast('✅ Entri ditambahkan');
+  }
+  save(); closeModal(); render();
+}
+
+// ── DELETE ──
+function askDel(id){ delId=id; document.getElementById('cfm').classList.add('show'); }
+function closeCfm(){ document.getElementById('cfm').classList.remove('show'); delId=null; }
+function doDelete(){
+  data=data.filter(d=>d.id!==delId);
+  save(); closeCfm(); render(); toast('🗑 Entri dihapus');
+}
+
+// ── EXPORT / IMPORT ──
+function exportJSON(){
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download='logbook-kp-2026.json';
+  a.click(); toast('⬇ Data diekspor!');
+}
+
+function exportPDF(){
+  document.body.classList.add('pdf-mode');
+  toast('Menyiapkan PDF...');
+  
+  const opt = {
+    margin:       0.3,
+    filename:     'logbook-kp-2026.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+  
+  html2pdf().set(opt).from(document.body).save().then(() => {
+    document.body.classList.remove('pdf-mode');
+  }).catch(err => {
+    document.body.classList.remove('pdf-mode');
+    toast('❌ Gagal memproses PDF');
+  });
+}
+
+function importJSON(evt){
+  const f=evt.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try {
+      const parsed=JSON.parse(e.target.result);
+      if(!Array.isArray(parsed)) throw new Error();
+      data=parsed; save(); render(); toast('⬆ Data berhasil diimpor!');
+    } catch { toast('❌ File JSON tidak valid'); }
+  };
+  r.readAsText(f);
+  evt.target.value='';
+}
+
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2700);
+}
+
+// INIT
+render();
+</script>
+</body>
+</html>
